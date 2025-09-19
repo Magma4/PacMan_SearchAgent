@@ -86,51 +86,78 @@ def depthFirstSearch(problem: SearchProblem):
     print("Is the start a goal?", problem.isGoalState(problem.getStartState()))
     print("Start's successors:", problem.getSuccessors(problem.getStartState()))
     """
+    # Define a stack variable to store state and actions
     state_stack = util.Stack()
+    # Define a set variable to store visited nodes
     visited_nodes = set()
 
-    # Push start state
+    # Get start state and addto stack
     start_state = problem.getStartState()
     state_stack.push((start_state, []))
 
+    # Checl if state statck is empty
     while not state_stack.isEmpty():
+        # Remove current node and actions from stack
         current_node, actions = state_stack.pop()
 
+        # Check if current node is not in visited nodes
         if current_node not in visited_nodes:
+            # Add current node to visited nodes
             visited_nodes.add(current_node)
 
+            # Check if current node is a goal state
             if problem.isGoalState(current_node):
+                # Return actions
                 return actions
 
+            # Get successors of current node
             for successor, action, cost in problem.getSuccessors(current_node):
+                # Check if successor is not in visited nodes
                 if successor not in visited_nodes:
+                    # Add action to actions
                     current_actions = actions + [action]
+                    # Add successor and actions to stack
                     state_stack.push((successor, current_actions))
 
+    # Return empty list if no path is found
     return []
 
 def breadthFirstSearch(problem: SearchProblem):
     """Search the shallowest nodes in the search tree first."""
+    # Define a queue variable to store state and actions
     path = util.Queue()
+    # Define a set variable to store visited nodes
     visited_nodes = set()
 
+    # Get start state and add to queue
     start_state = problem.getStartState()
+    # Add start state and actions to queue
     path.push((start_state, []))
 
+    # Check if path is empty
     while not path.isEmpty():
+        # Remove current node and actions from queue
         (current_node, actions) = path.pop()
 
+        # Check if current node is not in visited nodes
         if current_node not in visited_nodes:
+            # Add current node to visited nodes
             visited_nodes.add(current_node)
 
+            # Check if current node is a goal state
             if problem.isGoalState(current_node):
+                # Return actions
                 return actions
 
+            # Get successors of current node
             for successor, action, cost in problem.getSuccessors(current_node):
+                # Check if successor is not in visited nodes
                 if successor not in visited_nodes:
+                    # Add action to actions
                     current_actions = actions + [action]
+                    # Add successor and actions to queue
                     path.push((successor, current_actions))
-
+    # Return empty list if no path is found
     return []
 
 def uniformCostSearch(problem: SearchProblem):
