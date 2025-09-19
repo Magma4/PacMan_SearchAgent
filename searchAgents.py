@@ -300,21 +300,17 @@ class CornersProblem(search.SearchProblem):
         Returns the start state (in your state space, not the full Pacman state
         space)
         """
-        "*** YOUR CODE HERE ***"
-        return (self.startingPosition,self.initialState)
+        visited_corners = (False, False, False, False)  # (corner1, corner2, corner3, corner4)
+        return (self.startingPosition, visited_corners)
 
     def isGoalState(self, state: Any):
         """
         Returns whether this search state is a goal state of the problem.
         """
-        "*** YOUR CODE HERE ***"
-         # This path has visit all the corners #
-        for item in state[1]:
-            if item == 0: # Even if one corner is not visited
-                return False
+        position = state[0]
+        visited_corners = state[1]
 
-        # All corners are visited #
-        return True
+        return all(visited_corners)
 
     def getSuccessors(self, state: Any):
         """
@@ -336,7 +332,7 @@ class CornersProblem(search.SearchProblem):
             #   hitsWall = self.walls[nextx][nexty]
 
             x,y = state[0] # Get (x,y)
-            corn = state[1][:] # Get list of visited corners
+            visited_corners = list(state[1])
 
              # Find movement #
             dx, dy = Actions.directionToVector(action)
@@ -347,9 +343,10 @@ class CornersProblem(search.SearchProblem):
 
                 # Check if we have reached a corner in the new position #
                 if (nextx,nexty) in self.corners:
-                    corn[self.corners.index((nextx,nexty))] = 1 # This corner is visited
+                    corner_index = self.corners.index((nextx, nexty))
+                    visited_corners[corner_index] = True
 
-                nextState = ((nextx, nexty),corn) # Fix new state
+                nextState = ((nextx, nexty), tuple(visited_corners))
                 cost = 1
 
                 successors.append((nextState,action,cost))
@@ -389,20 +386,16 @@ def cornersHeuristic(state: Any, problem: CornersProblem):
     "*** YOUR CODE HERE ***"
     from util import manhattanDistance
 
-    # Goal state #
-    if problem.isGoalState(state):
+    if all(state[1]):
         return 0
 
-    else:
-        distancesFromGoals = [] # Calculate all distances from goals(not visited corners)
+    distancesFromGoals = []
+    for index, visited in enumerate(state[1]):
+        if not visited:
+            distancesFromGoals.append(manhattanDistance(state[0], corners[index]))
 
-        for index,item in enumerate(state[1]):
-            if item == 0: # Not visited corner
-                # Use manhattan method #
-                distancesFromGoals.append(manhattanDistance(state[0],corners[index]))
 
-        # Worst case. This guess should be higher than real. Pick higher distance #
-        return max(distancesFromGoals)
+    return max(distancesFromGoals) if distancesFromGoals else 0
 
 class AStarCornersAgent(SearchAgent):
     "A SearchAgent for FoodSearchProblem using A* and your foodHeuristic"
