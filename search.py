@@ -163,27 +163,43 @@ def breadthFirstSearch(problem: SearchProblem):
 def uniformCostSearch(problem: SearchProblem):
     """Search the node of least total cost first."""
     "*** YOUR CODE HERE ***"
+    # Define a priority queue variable to store state and actions
     start_state = problem.getStartState()
+    # Define a set variable to store visited nodes
     path = util.PriorityQueue()
+    # Define a set variable to store visited nodes
     visited_node = set()
+    # Define a current cost variable and set it to 0
     current_cost = 0
+    # Add start state and actions to priority queue
     path.push((start_state, [], 0), current_cost)
 
+    # Check if path is empty
     while not path.isEmpty():
+        # Remove current node and actions from priority queue
         current_node, actions, total_cost = path.pop()
 
+        # Check if current node is not in visited nodes
         if current_node not in visited_node:
+            # Add current node to visited nodes
             visited_node.add(current_node)
 
+            # Check if current node is a goal state
             if problem.isGoalState(current_node):
+                # Return actions
                 return actions
 
+            # Get successors, actions and cost of current node
             for successor, action, cost in problem.getSuccessors(current_node):
+                # Check if successor is not in visited nodes
                 if successor not in visited_node:
+                    # Add action to actions
                     new_actions = actions + [action]
+                    # Add cost to total cost
                     new_cost = total_cost + cost
+                    # Add successor, actions and cost to priority queue
                     path.push((successor, new_actions, new_cost), new_cost)
-
+    # Return empty list if no path is found
     return []
 
 
@@ -196,32 +212,51 @@ def nullHeuristic(state, problem=None):
 
 def aStarSearch(problem: SearchProblem, heuristic=nullHeuristic):
     """Search the node that has the lowest combined cost and heuristic first."""
-
+    # Get start state
     start_state = problem.getStartState()
+    # Define a priority queue variable to store state and actions
     path = util.PriorityQueue()
+    # Define a set variable to store visited nodes
     visited_node = set()
+    # Define cost variable and set it to 0
     cost = 0
+    # Define heuristic cost and set it to heuristic of start state
     heuristic_cost = heuristic(start_state, problem)
+    # Define true cost by adding cost and heuristic cost
     true_cost = cost + heuristic_cost
+    # Add start state, actions and true cost to priority queue
     path.push((start_state, [], 0), true_cost)
 
+    # Check if path is empty
     while not path.isEmpty():
+        # Remove current node and actions from priority queue
         current_node, actions, total_cost = path.pop()
 
+        # Check if current node is not in visited nodes
         if current_node not in visited_node:
+            # Add current node to visited nodes
             visited_node.add(current_node)
 
+            # Check if current node is a goal state
             if problem.isGoalState(current_node):
+                # Return actions
                 return actions
 
+            # Get successors, actions and cost of current node
             for successor, action, cost in problem.getSuccessors(current_node):
+                # Check if successor is not in visited nodes
                 if successor not in visited_node:
+                    # Add action to actions
                     new_actions = actions + [action]
+                    # Add cost to total cost
                     new_cost = total_cost + cost
+                    # Add heuristic cost to new heuristic cost
                     new_heuristic_cost = heuristic(successor, problem)
+                    # Add new cost and new heuristic cost to new true cost
                     new_true_cost = new_cost + new_heuristic_cost
+                    # Add successor, actions and new true cost to priority queue
                     path.push((successor, new_actions, new_cost), new_true_cost)
-
+    # Return empty list if no path is found
     return []
 
 

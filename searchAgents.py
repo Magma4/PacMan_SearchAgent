@@ -300,16 +300,20 @@ class CornersProblem(search.SearchProblem):
         Returns the start state (in your state space, not the full Pacman state
         space)
         """
-        visited_corners = (False, False, False, False)  # (corner1, corner2, corner3, corner4)
+        # Set visited corners to False
+        visited_corners = (False, False, False, False)
+        # Return starting position and visited corners
         return (self.startingPosition, visited_corners)
 
     def isGoalState(self, state: Any):
         """
         Returns whether this search state is a goal state of the problem.
         """
+        # Get position and visited corners
         position = state[0]
+        # Get visited corners
         visited_corners = state[1]
-
+        # Return if all corners are visited
         return all(visited_corners)
 
     def getSuccessors(self, state: Any):
@@ -332,7 +336,7 @@ class CornersProblem(search.SearchProblem):
             #   hitsWall = self.walls[nextx][nexty]
 
             x,y = state[0] # Get (x,y)
-            visited_corners = list(state[1])
+            visited_corners = list(state[1]) # Get visited corners
 
              # Find movement #
             dx, dy = Actions.directionToVector(action)
@@ -344,11 +348,14 @@ class CornersProblem(search.SearchProblem):
                 # Check if we have reached a corner in the new position #
                 if (nextx,nexty) in self.corners:
                     corner_index = self.corners.index((nextx, nexty))
+                    # Set visited corner to True
                     visited_corners[corner_index] = True
-
+                # Set next state to (nextx, nexty) and visited corners
                 nextState = ((nextx, nexty), tuple(visited_corners))
+                # Set cost to 1
                 cost = 1
 
+                # Add next state, action and cost to successors
                 successors.append((nextState,action,cost))
 
         self._expanded += 1 # DO NOT CHANGE
@@ -382,8 +389,6 @@ def cornersHeuristic(state: Any, problem: CornersProblem):
     """
     corners = problem.corners # These are the corner coordinates
     walls = problem.walls # These are the walls of the maze, as a Grid (game.py)
-
-    "*** YOUR CODE HERE ***"
     from util import manhattanDistance
 
     if all(state[1]):
